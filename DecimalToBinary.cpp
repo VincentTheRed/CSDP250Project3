@@ -23,17 +23,15 @@ struct Node {
     Node* next;
 };
 
-//Stack class using linked list
+//Stack class
 class Stack {
 public:
     Node* top;
 
-    //Constructor
     Stack() {
         top = nullptr;
     }
 
-    //Push data onto the stack
     void push(int data) {
         Node* newNode = new Node();
         newNode->data = data;
@@ -41,7 +39,6 @@ public:
         top = newNode;
     }
 
-    //Pop data from the stack
     int pop() {
         if (top == nullptr) {
             return -1;
@@ -53,24 +50,21 @@ public:
         return data;
     }
 
-    //Check if stack is empty
     bool isEmpty() {
         return top == nullptr;
     }
 };
 
-//Queue class using linked list
+//Queue class
 class Queue {
 public:
     Node* front;
     Node* rear;
 
-    //Constructor
     Queue() {
         front = rear = nullptr;
     }
 
-    //Enqueue data onto the queue
     void enqueue(int data) {
         Node* newNode = new Node();
         newNode->data = data;
@@ -83,7 +77,6 @@ public:
         rear = newNode;
     }
 
-    //Dequeue data from the queue
     int dequeue() {
         if (front == nullptr) {
             return -1;
@@ -98,7 +91,6 @@ public:
         return data;
     }
 
-    //Check if queue is empty
     bool isEmpty() {
         return front == nullptr;
     }
@@ -121,15 +113,17 @@ string integerToBinary(int n) {
     return binary;
 }
 
-//Convert decimal to binary using queue
-string decimalToBinary(const string& decimalStr) {
+//Convert decimal to binary using queue with precision
+string decimalToBinary(const string& decimalStr, int precision) {
     double fractional = stod("0." + decimalStr);
     Queue q;
-    while (fractional > 0) {
+    int count = 0;  // to keep track of precision
+    while (fractional > 0 && count < precision) {
         fractional *= 2;
         int bit = static_cast<int>(fractional);
         q.enqueue(bit);
         fractional -= bit;
+        count++;
     }
     string binary = "";
     while (!q.isEmpty()) {
@@ -138,8 +132,12 @@ string decimalToBinary(const string& decimalStr) {
     return binary;
 }
 
-
 int main() {
+    cout << "==========================" << endl;
+    cout << "Decimal to Binary Converter" << endl;
+    cout << "==========================" << endl << endl;
+
+    cout << "-- Input --" << endl;
     string numberStr;
     cout << "Enter a decimal number: ";
     cin >> numberStr;
@@ -148,11 +146,22 @@ int main() {
     int integerPart = stoi(numberStr.substr(0, decimalPos));
     string decimalStr = (decimalPos != string::npos) ? numberStr.substr(decimalPos + 1) : "0";
 
-    string binaryInteger = integerToBinary(integerPart);  //Convert integer part to binary
-    string binaryFractional = decimalToBinary(decimalStr);  //Convert fractional part to binary
+    int precision;
+    cout << "Enter the number of precision digits for binary fractional part: ";
+    cin >> precision;
+    cout << endl;
 
-    cout << "Integer Part: " << binaryInteger << endl;
-    cout << "Decimal Part: " << binaryFractional << endl;
+    cout << "-- Conversion --" << endl;
+    string binaryInteger = integerToBinary(integerPart);
+    string binaryFractional = decimalToBinary(decimalStr, precision);
+
+    cout << endl << "-- Result --" << endl;
+    cout << "Binary Representation: " << binaryInteger;
+
+    if (!binaryFractional.empty()) {
+        cout << "." << binaryFractional;
+    }
+    cout << endl << endl;
 
     return 0;
 }
